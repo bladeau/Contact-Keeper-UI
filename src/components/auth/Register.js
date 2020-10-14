@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { AlertDispatchContext } from '../../context/alert/alertContext'
 
 const Register = () => {
+  const setAlertDispatch = useContext(AlertDispatchContext)
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -14,7 +16,13 @@ const Register = () => {
 
   const onSubmit = (e) => {
     e.preventDefault()
-    console.log('register submit')
+    if (name === '' || email === '' || password === '') {
+      setAlertDispatch('Please enter all fields', 'danger')
+    } else if (password !== password2) {
+      setAlertDispatch('Passwords do not match', 'danger')
+    } else {
+      console.log('register submit')
+    }
   }
   return (
     <div className='form-container'>
@@ -32,6 +40,7 @@ const Register = () => {
               name='email'
               value={email}
               onChange={onChange}
+              required // html version of validation
             />
           </div>
           <div className='form-group'>
@@ -41,6 +50,8 @@ const Register = () => {
               name='password'
               value={password}
               onChange={onChange}
+              minLength='6' // html version of validation
+              required // html version of validation
             />
           </div>
           <div className='form-group'>
@@ -50,6 +61,8 @@ const Register = () => {
               name='password2'
               value={password2}
               onChange={onChange}
+              required // html version of validation
+              minLength='6' // html version of validation
             />
           </div>
           <input
