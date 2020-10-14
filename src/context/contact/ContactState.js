@@ -42,12 +42,13 @@ const ContactState = (props) => {
       },
     ],
     current: null,
+    filtered: null
   }
   const [state, dispatch] = useReducer(contactReducer, initialState)
 
   return (
     <ContactContext.Provider
-      value={{ contacts: state.contacts, current: state.current }}
+      value={{ contacts: state.contacts, current: state.current, filtered: state.filtered }}
     >
       <ContactDispatchContext.Provider value={dispatch}>
         {props.children}
