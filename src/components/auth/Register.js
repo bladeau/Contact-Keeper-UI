@@ -1,8 +1,16 @@
 import React, { useState, useContext } from 'react'
 import { AlertDispatchContext } from '../../context/alert/alertContext'
+import {
+  AuthContext,
+  AuthDispatchContext,
+} from '../../context/auth/authContext'
+import { REGISTER_FAIL, REGISTER_SUCCESS } from '../../context/types'
+import axios from 'axios'
 
 const Register = () => {
   const setAlertDispatch = useContext(AlertDispatchContext)
+  const dispatch = useContext(AuthDispatchContext)
+
   const [user, setUser] = useState({
     name: '',
     email: '',
@@ -11,6 +19,26 @@ const Register = () => {
   })
 
   const { name, email, password, password2 } = user
+
+  const registerDispatch = async (formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+    try {
+      const res = await axios.post('api/users', formData, config) // Proxy value in package.json so no need for localhost:5000
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: res.data,
+      })
+    } catch (err) {
+      dispatch({
+        type: REGISTER_FAIL,
+        payload: err.response.data.msg,
+      })
+    }
+  }
 
   const onChange = (e) => setUser({ ...user, [e.target.name]: e.target.value })
 
@@ -21,7 +49,11 @@ const Register = () => {
     } else if (password !== password2) {
       setAlertDispatch('Passwords do not match', 'danger')
     } else {
-      console.log('register submit')
+      registerDispatch({
+        name,
+        email,
+        password,
+      })
     }
   }
   return (
