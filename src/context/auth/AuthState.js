@@ -4,16 +4,7 @@ import authReducer from './authReducer'
 import setAuthToken from '../../utils/setAuthToken'
 import axios from 'axios'
 
-import {
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  USER_LOADED,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  CLEAR_ERRORS,
-} from '../types'
+import { USER_LOADED, AUTH_ERROR, LOGOUT } from '../types'
 
 const AuthState = (props) => {
   const initialState = {
