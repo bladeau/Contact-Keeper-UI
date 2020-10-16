@@ -29,7 +29,6 @@ const Navbar = ({ title, icon }) => {
 
   const guestLinks = (
     <>
-      <li>Hello {user && user.name}</li>
       <li>
         <Link to='/register'>Register</Link>
       </li>
