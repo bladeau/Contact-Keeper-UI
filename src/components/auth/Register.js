@@ -1,15 +1,31 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { AlertDispatchContext } from '../../context/alert/alertContext'
 import {
   AuthContext,
   AuthDispatchContext,
 } from '../../context/auth/authContext'
-import { REGISTER_FAIL, REGISTER_SUCCESS } from '../../context/types'
+import {
+  CLEAR_ERRORS,
+  REGISTER_FAIL,
+  REGISTER_SUCCESS,
+} from '../../context/types'
 import axios from 'axios'
 
-const Register = () => {
+const Register = (props) => {
   const setAlertDispatch = useContext(AlertDispatchContext)
-  const dispatch = useContext(AuthDispatchContext)
+  const { dispatch, loadUser } = useContext(AuthDispatchContext)
+  const { error, isAuthenticated } = useContext(AuthContext)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      props.history.push('/')
+    }
+    if (error === 'User already exists') {
+      setAlertDispatch(error, 'danger')
+      dispatch({ type: CLEAR_ERRORS })
+    }
+    // eslint-disable-next-line
+  }, [error, isAuthenticated, props.history])
 
   const [user, setUser] = useState({
     name: '',
@@ -32,6 +48,7 @@ const Register = () => {
         type: REGISTER_SUCCESS,
         payload: res.data,
       })
+      loadUser()
     } catch (err) {
       dispatch({
         type: REGISTER_FAIL,
