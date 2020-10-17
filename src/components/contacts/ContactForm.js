@@ -1,11 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios'
+
 import {
   ContactContext,
   ContactDispatchContext,
 } from '../../context/contact/contactContext'
 
-import { ADD_CONTACT, CLEAR_CURRENT, UPDATE_CONTACT } from '../../context/types'
-import { v4 as uuid } from 'uuid'
+import {
+  ADD_CONTACT,
+  CLEAR_CURRENT,
+  UPDATE_CONTACT,
+  CONTACT_ERROR,
+} from '../../context/types'
 
 const ContactForm = () => {
   const { current } = useContext(ContactContext)
@@ -31,9 +37,19 @@ const ContactForm = () => {
 
   const dispatch = useContext(ContactDispatchContext)
 
-  const addContact = (contact) => {
-    contact.id = uuid()
-    dispatch({ type: ADD_CONTACT, payload: contact })
+  const addContact = async (contact) => {
+    const config = {
+      headers: { 'Content-Type': 'application/json' },
+    }
+
+    try {
+      //Update Database
+      const res = await axios.post('/api/contacts', contact, config)
+      //Update Context State based on response from server (the new record)
+      dispatch({ type: ADD_CONTACT, payload: res.data })
+    } catch (err) {
+      dispatch({ type: CONTACT_ERROR, payload: err.response.msg })
+    }
   }
   const updateContact = (contact) => {
     dispatch({ type: UPDATE_CONTACT, payload: contact })

@@ -6,6 +6,7 @@ import {
   UPDATE_CONTACT,
   FILTER_CONTACTS,
   CLEAR_FILTER,
+  CONTACT_ERROR,
 } from '../types'
 
 export default (state, action) => {
@@ -40,20 +41,24 @@ export default (state, action) => {
         ...state,
         current: null,
       }
-      case FILTER_CONTACTS:
-        return{
-          ...state,
-          filtered: state.contacts.filter(contact=> {
-            const regex = new RegExp(`${action.payload}`,'gi')
-            return contact.name.match(regex) || contact.email.match(regex)
-
-          })
-        }
-        case CLEAR_FILTER:
-          return{
-            ...state,
-            filtered: null
-          }
+    case FILTER_CONTACTS:
+      return {
+        ...state,
+        filtered: state.contacts.filter((contact) => {
+          const regex = new RegExp(`${action.payload}`, 'gi')
+          return contact.name.match(regex) || contact.email.match(regex)
+        }),
+      }
+    case CLEAR_FILTER:
+      return {
+        ...state,
+        filtered: null,
+      }
+    case CONTACT_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      }
     default:
       return state
   }
