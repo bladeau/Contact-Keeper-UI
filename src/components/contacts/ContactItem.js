@@ -1,15 +1,35 @@
 import React, { useContext } from 'react'
+import axios from 'axios'
 import PropTypes from 'prop-types'
 import { ContactDispatchContext } from '../../context/contact/contactContext'
-import { CLEAR_CURRENT, DELETE_CONTACT, SET_CURRENT } from '../../context/types'
+import {
+  CLEAR_CURRENT,
+  DELETE_CONTACT,
+  SET_CURRENT,
+  CONTACT_ERROR,
+} from '../../context/types'
 
 const ContactItem = ({ contact }) => {
-  const { id, name, email, phone, type } = contact
+  const { _id, name, email, phone, type } = contact
 
   const dispatch = useContext(ContactDispatchContext)
-  const onDelete = () => {
-    dispatch({ type: DELETE_CONTACT, payload: id })
-    clearCurrent()
+
+  const onDelete = async () => {
+    try {
+      await axios.delete(`/api/contacts/${_id}`)
+
+      dispatch({
+        type: DELETE_CONTACT,
+        payload: _id,
+      })
+
+      clearCurrent()
+    } catch (err) {
+      dispatch({
+        type: CONTACT_ERROR,
+        payload: err.response.msg,
+      })
+    }
   }
 
   const setCurrent = (contact) => {
