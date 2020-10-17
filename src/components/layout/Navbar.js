@@ -5,14 +5,24 @@ import {
   AuthContext,
   AuthDispatchContext,
 } from '../../context/auth/authContext'
-import { LOGOUT } from '../../context/types'
+
+import { LOGOUT, CLEAR_CONTACTS } from '../../context/types'
+
+import { ContactDispatchContext } from '../../context/contact/contactContext'
 
 const Navbar = ({ title, icon }) => {
   const { isAuthenticated, user } = useContext(AuthContext)
-  const { dispatch } = useContext(AuthDispatchContext)
+  const { dispatch: dispatchAuth } = useContext(AuthDispatchContext)
+
+  const dispatchContacts = useContext(ContactDispatchContext)
+
+  const clearContacts = () => {
+    dispatchContacts({ type: CLEAR_CONTACTS })
+  }
 
   const logout = () => {
-    dispatch({ type: LOGOUT })
+    dispatchAuth({ type: LOGOUT })
+    clearContacts()
   }
 
   const authLinks = (

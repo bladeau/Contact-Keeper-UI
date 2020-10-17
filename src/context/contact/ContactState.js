@@ -4,7 +4,7 @@ import contactReducer from './contactReducer'
 
 const ContactState = (props) => {
   const initialState = {
-    contacts: [],
+    contacts: null,
     current: null,
     filtered: null,
     errors: null,
